@@ -1,0 +1,49 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Georgia', serif;
+}
+
+body {
+  background: linear-gradient(135deg, #4c311c 0%, #8e6844 60%, #484d38 100%);
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #4c311c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dcb490;
+  border-radius: 3px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Georgia', serif;
+}
+
+body {
+  background: linear-gradient(135deg, #4c311c 0%, #8e6844 60%, #484d38 100%);
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #4c311c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dcb490;
+  border-radius: 3px;
+}
