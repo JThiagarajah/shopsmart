@@ -1,13 +1,14 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import productRoutes from "./routes/product.js";
 import categoryRoutes from "./routes/category.js";
 import supplierRoutes from "./routes/supplier.js";
-
-
+import authRoutes from "./routes/auth.js";
+import protect from "./middleware/auth.js";
 
 const app = express();
 
@@ -15,10 +16,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use("/api/products", productRoutes);
-app.use("/api/categories", categoryRoutes);
-app.use("/api/suppliers", supplierRoutes);
+// Public Routes
+app.use("/api/auth", authRoutes);
+
+// Protected Routes
+app.use("/api/products", protect, productRoutes);
+app.use("/api/categories", protect, categoryRoutes);
+app.use("/api/suppliers", protect, supplierRoutes);
 
 // Root
 app.get("/", (req, res) => {
