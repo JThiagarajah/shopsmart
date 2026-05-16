@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../utils/axios.js";
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -8,24 +8,19 @@ function Products() {
   const [showForm, setShowForm] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
   const [form, setForm] = useState({
-    name: "",
-    description: "",
-    price: "",
-    quantity: "",
-    minStockLevel: "",
-    category: "",
-    supplier: "",
+    name: "", description: "", price: "",
+    quantity: "", minStockLevel: "", category: "", supplier: "",
   });
 
   const fetchProducts = async () => {
-    const res = await axios.get("http://localhost:8000/api/products");
+    const res = await API.get("/products");
     setProducts(res.data);
   };
 
   const fetchDropdowns = async () => {
     const [cat, sup] = await Promise.all([
-      axios.get("http://localhost:8000/api/categories"),
-      axios.get("http://localhost:8000/api/suppliers"),
+      API.get("/categories"),
+      API.get("/suppliers"),
     ]);
     setCategories(cat.data);
     setSuppliers(sup.data);
@@ -39,9 +34,9 @@ function Products() {
   const handleSubmit = async () => {
     try {
       if (editProduct) {
-        await axios.put(`http://localhost:8000/api/products/${editProduct._id}`, form);
+        await API.put(`/products/${editProduct._id}`, form);
       } else {
-        await axios.post("http://localhost:8000/api/products", form);
+        await API.post("/products", form);
       }
       setShowForm(false);
       setEditProduct(null);
@@ -68,7 +63,7 @@ function Products() {
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      await axios.delete(`http://localhost:8000/api/products/${id}`);
+      await API.delete(`/products/${id}`);
       fetchProducts();
     }
   };
@@ -78,25 +73,29 @@ function Products() {
     padding: "10px",
     marginBottom: "12px",
     borderRadius: "8px",
-    border: "1px solid #cdd6f4",
+    border: "1px solid rgba(220,180,144,0.3)",
     fontSize: "14px",
+    backgroundColor: "rgba(220,180,144,0.1)",
+    color: "white",
+    fontFamily: "'Georgia', serif",
   };
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-        <h1 style={{ color: "#1e1e2e" }}>📦 Products</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+        <h1 style={{ color: "#dcb490", letterSpacing: "2px" }}>📦 Products</h1>
         <button
           onClick={() => { setShowForm(!showForm); setEditProduct(null); setForm({ name: "", description: "", price: "", quantity: "", minStockLevel: "", category: "", supplier: "" }); }}
-          style={{ backgroundColor: "#89b4fa", border: "none", padding: "10px 20px", borderRadius: "8px", cursor: "pointer", fontWeight: "bold" }}
+          style={{ backgroundColor: "#dcb490", border: "none", padding: "10px 20px", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", color: "#4c311c", fontFamily: "'Georgia', serif" }}
         >
           {showForm ? "Cancel" : "+ Add Product"}
         </button>
       </div>
+      <div style={{ width: "50px", height: "3px", backgroundColor: "#dcb490", borderRadius: "2px", marginBottom: "32px" }} />
 
       {showForm && (
-        <div style={{ backgroundColor: "#f5f5f5", padding: "24px", borderRadius: "12px", marginBottom: "24px" }}>
-          <h3>{editProduct ? "Edit Product" : "Add New Product"}</h3>
+        <div style={{ background: "rgba(220,180,144,0.1)", border: "1px solid rgba(220,180,144,0.3)", padding: "24px", borderRadius: "16px", marginBottom: "24px", backdropFilter: "blur(8px)" }}>
+          <h3 style={{ color: "#dcb490", marginBottom: "16px" }}>{editProduct ? "Edit Product" : "Add New Product"}</h3>
           <input style={inputStyle} placeholder="Product Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <input style={inputStyle} placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
           <input style={inputStyle} placeholder="Price" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
@@ -104,62 +103,44 @@ function Products() {
           <input style={inputStyle} placeholder="Min Stock Level" type="number" value={form.minStockLevel} onChange={(e) => setForm({ ...form, minStockLevel: e.target.value })} />
           <select style={inputStyle} value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
             <option value="">Select Category</option>
-            {categories.map((cat) => (
-              <option key={cat._id} value={cat._id}>{cat.name}</option>
-            ))}
+            {categories.map((cat) => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
           </select>
           <select style={inputStyle} value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })}>
             <option value="">Select Supplier</option>
-            {suppliers.map((sup) => (
-              <option key={sup._id} value={sup._id}>{sup.name}</option>
-            ))}
+            {suppliers.map((sup) => <option key={sup._id} value={sup._id}>{sup.name}</option>)}
           </select>
-          <button
-            onClick={handleSubmit}
-            style={{ backgroundColor: "#a6e3a1", border: "none", padding: "10px 24px", borderRadius: "8px", cursor: "pointer", fontWeight: "bold" }}
-          >
+          <button onClick={handleSubmit} style={{ backgroundColor: "#dcb490", border: "none", padding: "10px 24px", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", color: "#4c311c", fontFamily: "'Georgia', serif" }}>
             {editProduct ? "Update Product" : "Save Product"}
           </button>
         </div>
       )}
 
-      <table style={{ width: "100%", borderCollapse: "collapse", backgroundColor: "white", borderRadius: "12px", overflow: "hidden", boxShadow: "0 4px 10px rgba(0,0,0,0.1)" }}>
-        <thead style={{ backgroundColor: "#1e1e2e", color: "white" }}>
-          <tr>
-            <th style={{ padding: "14px", textAlign: "left" }}>Name</th>
-            <th style={{ padding: "14px", textAlign: "left" }}>Category</th>
-            <th style={{ padding: "14px", textAlign: "left" }}>Supplier</th>
-            <th style={{ padding: "14px", textAlign: "left" }}>Price</th>
-            <th style={{ padding: "14px", textAlign: "left" }}>Quantity</th>
-            <th style={{ padding: "14px", textAlign: "left" }}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product._id} style={{ borderBottom: "1px solid #eee" }}>
-              <td style={{ padding: "14px" }}>{product.name}</td>
-              <td style={{ padding: "14px" }}>{product.category?.name}</td>
-              <td style={{ padding: "14px" }}>{product.supplier?.name}</td>
-              <td style={{ padding: "14px" }}>Rs. {product.price}</td>
-              <td style={{ padding: "14px" }}>{product.quantity}</td>
-              <td style={{ padding: "14px" }}>
-                <button
-                  onClick={() => handleEdit(product)}
-                  style={{ backgroundColor: "#89b4fa", border: "none", padding: "6px 12px", borderRadius: "6px", cursor: "pointer", marginRight: "8px" }}
-                >
-                  ✏️ Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(product._id)}
-                  style={{ backgroundColor: "#f38ba8", border: "none", padding: "6px 12px", borderRadius: "6px", cursor: "pointer" }}
-                >
-                  🗑️ Delete
-                </button>
-              </td>
+      <div style={{ background: "rgba(220,180,144,0.05)", borderRadius: "16px", overflow: "hidden", border: "1px solid rgba(220,180,144,0.2)" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead style={{ backgroundColor: "rgba(76,49,28,0.8)" }}>
+            <tr>
+              {["Name", "Category", "Supplier", "Price", "Quantity", "Actions"].map((h) => (
+                <th key={h} style={{ padding: "14px", textAlign: "left", color: "#dcb490", letterSpacing: "1px", fontSize: "13px" }}>{h}</th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {products.map((product) => (
+              <tr key={product._id} style={{ borderBottom: "1px solid rgba(220,180,144,0.1)" }}>
+                <td style={{ padding: "14px", color: "#ffffff" }}>{product.name}</td>
+                <td style={{ padding: "14px", color: "#cab6a5" }}>{product.category?.name}</td>
+                <td style={{ padding: "14px", color: "#cab6a5" }}>{product.supplier?.name}</td>
+                <td style={{ padding: "14px", color: "#dcb490" }}>Rs. {product.price}</td>
+                <td style={{ padding: "14px", color: product.quantity <= product.minStockLevel ? "#f38ba8" : "#a6e3a1", fontWeight: "bold" }}>{product.quantity}</td>
+                <td style={{ padding: "14px" }}>
+                  <button onClick={() => handleEdit(product)} style={{ backgroundColor: "#8d7b5e", border: "none", padding: "6px 12px", borderRadius: "6px", cursor: "pointer", marginRight: "8px", color: "white", fontFamily: "'Georgia', serif" }}>✏️ Edit</button>
+                  <button onClick={() => handleDelete(product._id)} style={{ backgroundColor: "#9e3a3a", border: "none", padding: "6px 12px", borderRadius: "6px", cursor: "pointer", color: "white", fontFamily: "'Georgia', serif" }}>🗑️ Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

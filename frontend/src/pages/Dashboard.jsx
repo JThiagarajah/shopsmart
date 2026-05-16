@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../utils/axios.js";
 
 function Dashboard() {
   const [stats, setStats] = useState({
@@ -13,10 +13,10 @@ function Dashboard() {
     const fetchStats = async () => {
       try {
         const [products, categories, suppliers, lowStock] = await Promise.all([
-          axios.get("http://localhost:8000/api/products"),
-          axios.get("http://localhost:8000/api/categories"),
-          axios.get("http://localhost:8000/api/suppliers"),
-          axios.get("http://localhost:8000/api/products/low-stock"),
+          API.get("/products"),
+          API.get("/categories"),
+          API.get("/suppliers"),
+          API.get("/products/low-stock"),
         ]);
         setStats({
           products: products.data.length,
@@ -32,17 +32,24 @@ function Dashboard() {
   }, []);
 
   const cards = [
-    { label: "Total Products", value: stats.products, color: "#89b4fa", icon: "📦" },
-    { label: "Categories", value: stats.categories, color: "#a6e3a1", icon: "🗂️" },
-    { label: "Suppliers", value: stats.suppliers, color: "#fab387", icon: "🚚" },
-    { label: "Low Stock Alerts", value: stats.lowStock, color: "#f38ba8", icon: "⚠️" },
+    { label: "Total Products", value: stats.products, color: "#c8955e", icon: "📦" },
+    { label: "Categories", value: stats.categories, color: "#8d7b5e", icon: "🗂️" },
+    { label: "Suppliers", value: stats.suppliers, color: "#7a8c6e", icon: "🚚" },
+    { label: "Low Stock Alerts", value: stats.lowStock, color: "#9e6b4a", icon: "⚠️" },
   ];
 
   return (
     <div>
-      <h1 style={{ marginBottom: "30px", color: "#1e1e2e" }}>
-        Dashboard
+      <h1 style={{ color: "#dcb490", letterSpacing: "2px", marginBottom: "8px" }}>
+        🏠 Dashboard
       </h1>
+      <div style={{
+        width: "50px",
+        height: "3px",
+        backgroundColor: "#dcb490",
+        borderRadius: "2px",
+        marginBottom: "32px",
+      }} />
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
@@ -50,17 +57,21 @@ function Dashboard() {
       }}>
         {cards.map((card) => (
           <div key={card.label} style={{
-            backgroundColor: card.color,
-            borderRadius: "12px",
-            padding: "24px",
+            background: "rgba(220,180,144,0.1)",
+            border: "1px solid rgba(220,180,144,0.3)",
+            borderRadius: "16px",
+            padding: "28px",
             textAlign: "center",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+            backdropFilter: "blur(8px)",
           }}>
-            <div style={{ fontSize: "40px" }}>{card.icon}</div>
-            <h2 style={{ fontSize: "36px", margin: "10px 0", color: "#1e1e2e" }}>
+            <div style={{ fontSize: "40px", marginBottom: "12px" }}>{card.icon}</div>
+            <h2 style={{ fontSize: "36px", margin: "10px 0", color: "#dcb490" }}>
               {card.value}
             </h2>
-            <p style={{ color: "#1e1e2e", fontWeight: "bold" }}>{card.label}</p>
+            <p style={{ color: "#cab6a5", fontWeight: "bold", fontSize: "13px", letterSpacing: "0.5px" }}>
+              {card.label}
+            </p>
           </div>
         ))}
       </div>
