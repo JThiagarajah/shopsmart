@@ -88,6 +88,32 @@ function Sidebar() {
         padding: "16px",
         borderTop: "1px solid rgba(220,180,144,0.3)",
       }}>
+
+        {/* Logout Button */}
+        <button
+          onClick={() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            navigate("/");
+          }}
+          style={{
+            width: "100%",
+            padding: "12px",
+            backgroundColor: "transparent",
+            color: "#f38ba8",
+            border: "1px solid #f38ba8",
+            borderRadius: "10px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "14px",
+            letterSpacing: "0.5px",
+            marginBottom: "8px",
+            fontFamily: "'Georgia', serif",
+          }}
+        >
+          🚪 Logout
+        </button>
+
         {/* Home Button */}
         <button
           onClick={() => navigate("/")}
